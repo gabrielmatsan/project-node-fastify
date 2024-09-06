@@ -2,7 +2,6 @@ import type { FastifyInstance } from 'fastify'
 import { z } from 'zod'
 import { knex } from '../database'
 import { randomUUID } from 'node:crypto'
-
 // Requets body: HTTPs ->
 
 export async function transactionsRoutes(app: FastifyInstance) {

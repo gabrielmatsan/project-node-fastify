@@ -6,6 +6,26 @@ import { randomUUID } from 'node:crypto'
 // Requets body: HTTPs ->
 
 export async function transactionsRoutes(app: FastifyInstance) {
+  app.get('/', async () => {
+    const transactions = await knex('transactions').select()
+    return { transactions }
+  })
+
+  // http://localhost:3333/transactions/:id
+  app.get('/:id', async (request) => {
+    const getTrasactionsParamsSchema = z.object({
+      id: z.string().uuid(),
+    })
+
+    // const params = getTrasactionsParamsSchema.parse(request.params)
+
+    const { id } = getTrasactionsParamsSchema.parse(request.params)
+
+    const transaction = await knex('transactions').where('id', id).first()
+
+    return transaction
+  })
+
   app.post('/', async (request, reply) => {
     // {title, amount, type:credit or debit}
 

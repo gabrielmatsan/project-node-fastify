@@ -3,7 +3,8 @@
 // eslint-disable-next-line
 import { Knex } from 'knex'
 
-// criamos uma interface e colocamos as Tables que nosso db tem
+// criamos uma interface e colocamos as Tables que nosso db tem, no caso, colocamos a tabela transactions, caso o dado for opcional, colocamos o "?:" em vez de ":".
+
 declare module 'knex/types/tables' {
   export interface Table {
     transactions: {

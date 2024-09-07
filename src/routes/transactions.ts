@@ -2,7 +2,9 @@ import type { FastifyInstance } from 'fastify'
 import { z } from 'zod'
 import { knex } from '../database'
 import { randomUUID } from 'node:crypto'
-// Requets body: HTTPs ->
+
+// Cookies <-> Formas da gente manter contexto entre requisições
+// para trabalhar com cookies instalar npm i @fastify/cookie
 
 export async function transactionsRoutes(app: FastifyInstance) {
   app.get('/', async () => {
@@ -25,6 +27,14 @@ export async function transactionsRoutes(app: FastifyInstance) {
     return transaction
   })
 
+  app.get('/summary', async () => {
+    const summary = await knex('transactions')
+      .sum('amount', { as: 'amount' })
+      .first()
+
+    return { summary }
+  })
+
   app.post('/', async (request, reply) => {
     // {title, amount, type:credit or debit}
 
@@ -38,10 +48,22 @@ export async function transactionsRoutes(app: FastifyInstance) {
       request.body,
     )
 
+    let sessionId = request.cookies.sessionId
+
+    if (!sessionId) {
+      sessionId = randomUUID()
+
+      reply.cookie('sessionId', sessionId, {
+        path: '/',
+        maxAge: 60 * 60 * 24 * 7, // 7 days
+      })
+    }
+
     await knex('transactions').insert({
       id: randomUUID(),
       title,
       amount: type === 'credit' ? amount : amount * -1,
+      session_id: sessionId,
     })
 
     // Query builders possuem limitacoes, caso apague os items dentro de transactions, ele nao consegue sugerir quais podem ser opcionais, obrigatorios etc. Isso sendo um dos motivos de usarmos ORMs

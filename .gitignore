@@ -1,6 +1,15 @@
+#Dependencies
 **node/modules
 node_modules
-db/app.db
+
+#Databases
+db/*.db
+
+#Environment
 .env
 .env.test
-.modelo.md
+
+#Markdown
+modelo.md
+#Build
+build

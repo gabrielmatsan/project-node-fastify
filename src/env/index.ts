@@ -13,8 +13,9 @@ if (process.env.NODE_ENV === 'test') {
 
 const envSchema = z.object({
   NODE_ENV: z.enum(['development', 'test', 'production']).default('production'),
+  DATABASE_CLIENT: z.enum(['sqlite', 'pg']),
   DATABASE_URL: z.string(),
-  PORT: z.number().default(3333), // por ter colocado um valor default nela, mesmo sem essa variavel em .env,pode ser executada
+  PORT: z.coerce.number().default(3333), // por ter colocado um valor default nela, mesmo sem essa variavel em .env,pode ser executada
 })
 
 /* 
